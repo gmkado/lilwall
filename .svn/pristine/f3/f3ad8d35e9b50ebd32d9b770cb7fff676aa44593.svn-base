@@ -1,0 +1,17 @@
+package com.example.bluetooth;
+
+import java.util.ArrayList;
+
+import android.app.Application;
+
+public class MyApp extends Application{
+	private ArrayList<WallObject> myWallList = new ArrayList<WallObject>();
+
+	  public ArrayList<WallObject> getWallList(){
+	    return myWallList;
+	  }
+	  public void setWallList(ArrayList<WallObject> a){
+	    myWallList = a;
+	  }
+
+}

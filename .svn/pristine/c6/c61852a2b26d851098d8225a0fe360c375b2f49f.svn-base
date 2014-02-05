@@ -1,0 +1,28 @@
+package com.example.bluetooth;
+import java.io.Serializable;
+import java.util.concurrent.atomic.AtomicInteger;
+
+
+public class WallObject implements Serializable{
+	String wallName;
+	int numCols;
+	int numRows;
+	static AtomicInteger nextId = new AtomicInteger();
+    private int id;
+
+    
+	public WallObject(String w, int c, int r)
+	{
+		wallName = w;
+		numCols = c;
+		numRows = r;
+		
+		id = nextId.incrementAndGet();
+	}
+
+	public int getID()
+	{
+		return id;
+	}
+	
+}

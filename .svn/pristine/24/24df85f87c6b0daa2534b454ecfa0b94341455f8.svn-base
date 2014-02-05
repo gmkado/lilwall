@@ -1,0 +1,21 @@
+package com.example.bluetooth;
+
+public class LedObject {
+	int R;
+	int G;
+	int B;
+	
+	public LedObject(int r, int g, int b){
+		R = r;
+		G = g;
+		B = b;
+	}
+	
+	public LedObject() {
+		R = 0;
+		G = 0;
+		B = 0;
+	}
+	
+
+}

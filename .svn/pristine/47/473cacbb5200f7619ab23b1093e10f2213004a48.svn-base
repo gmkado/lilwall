@@ -1,0 +1,18 @@
+package com.example.bluetooth;
+import java.io.Serializable;
+
+
+public class WallObject implements Serializable{
+	String wallName;
+	int numCols;
+	int numRows;
+	
+	public WallObject(String w, int c, int r)
+	{
+		wallName = w;
+		numCols = c;
+		numRows = r;
+	}
+
+	
+}

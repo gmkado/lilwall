@@ -1,0 +1,97 @@
+/**
+ * 
+ */
+package com.example.bluetooth;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
+import android.app.Activity;
+import android.bluetooth.BluetoothSocket;
+import android.content.Context;
+import android.graphics.Color;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Toast;
+/**
+ * @author Grant
+ *
+ */
+public class LedGridAdapter<LedColor> extends ArrayAdapter<LedColor> {
+	int row, colorVal;
+	int col;
+	WallObject myWall;
+	private MyApp appState;
+
+    public LedGridAdapter(Context context, int textViewResourceId, WallObject wo) {
+        super(context, textViewResourceId);
+        myWall = wo;   
+    }
+    
+    public int getCount()
+    {
+    	return getRowCount()*getColumnCount();
+    }
+    
+    public int getRowCount()
+    {
+    	return myWall.getNumRows();
+    }
+    
+    public int getColumnCount()
+    {
+    	return myWall.getNumCols();
+    }
+    
+
+    
+
+    @Override
+    public View getView(final int position, View convertView, ViewGroup parent) {
+        View cellView = convertView;
+
+        
+        if (cellView == null) {
+            LayoutInflater inflater = ((Activity) getContext()).getLayoutInflater();
+            cellView = inflater.inflate(R.layout.view_led_cell, parent, false);
+        }
+        cellView.setBackgroundColor(myWall.getColorVal(row,col));
+        cellView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                col = position % getColumnCount();
+                row = (position - col)/getColumnCount();
+                myWall.nextColor(row, col);
+                colorVal = myWall.getColorVal(row, col);
+                v.setBackgroundColor(colorVal);
+                
+                // write to bluetooth
+                appState = (MyApp) getContext().getApplicationContext();
+                BluetoothSocket socket = appState.getBtSocket();
+                if(socket == null)
+                {
+                	Toast.makeText(appState, "No bluetooth socket saved", Toast.LENGTH_SHORT).show();
+                }else{
+                	OutputStream mmOutStream;
+                    try {
+        				mmOutStream = socket.getOutputStream();
+        				
+        				BtMessageType mt = BtMessageType.CHANGE_COLOR;
+        				byte msglength = 6;
+        				byte[] message =  new byte[] {msglength, (byte) mt.getValue(), (byte) row , (byte) col,  
+        						(byte) Color.red(colorVal) ,(byte) Color.green(colorVal),(byte) Color.blue(colorVal)};        				
+        				mmOutStream.write(message);
+        			} catch (IOException e) {
+        			}
+                }
+                
+            }
+        });
+
+        return cellView;
+    }
+}

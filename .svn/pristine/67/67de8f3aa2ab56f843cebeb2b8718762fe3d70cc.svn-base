@@ -1,0 +1,39 @@
+package com.example.bluetooth;
+
+import java.util.ArrayList;
+import android.app.Application;
+import android.bluetooth.BluetoothSocket;
+
+public class MyApp extends Application{
+	private ArrayList<WallObject> myWallList = new ArrayList<WallObject>();
+	private WallObject myWall;
+	private BluetoothSocket btSocket = null;
+	
+		/************** Wall list *****************/
+	  public ArrayList<WallObject> getWallList(){
+	    return myWallList;
+	  }
+	  public void setWallList(ArrayList<WallObject> wl){
+	    myWallList = wl;
+	  }
+	  /************** Wall object *****************/
+	  public WallObject getWall(){
+		  return myWall;
+	  }
+	  
+	  public void setWall(WallObject wo)
+	  {
+		  myWall = wo;
+	  }
+	  /************** bluetooth socket *****************/
+	  public void setBtSocket(BluetoothSocket bts)
+	  {
+		  btSocket = bts;
+	  }
+	  
+	  public BluetoothSocket getBtSocket()
+	  {
+		  return btSocket;
+	  }
+	  
+}

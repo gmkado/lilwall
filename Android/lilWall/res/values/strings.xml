@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">LilWall</string>
+    <string name="action_settings">Settings</string>
+    <string name="numCol">Enter number of columns on wall:</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_configure_new_wall">ConfigureNewWall</string>
+    <string name="numRow">Enter number of rows on wall:</string>
+    <string name="nameWall">Enter new wall name:</string>
+    <string name="save">Save</string>
+    <string name="addWall">Add Wall</string>
+    <string name="title_section3">Section 3</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section1">Section 1</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_wall_grid">WallGridActivity</string>
+    <string name="preference_file_key">com.example.bluetooth.PREFERENCE_FILE_KEY</string>
+
+</resources>
