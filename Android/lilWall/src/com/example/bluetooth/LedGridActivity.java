@@ -1,24 +1,14 @@
 package com.example.bluetooth;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.UUID;
-
-import com.example.bluetooth.WallObject.LedColor;
-
-import android.app.Activity;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothSocket;
-import android.content.Intent;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.util.Log;
-import android.widget.GridView;
-import android.widget.Toast;
+import android.app.*;
+import android.bluetooth.*;
+import android.os.*;
+import android.util.*;
+import android.view.*;
+import android.widget.*;
+import com.example.bluetooth.WallObject.*;
+import java.io.*;
+import java.util.*;
 
 public class LedGridActivity extends Activity{
 	private BluetoothAdapter bluetooth = null;
@@ -34,6 +24,8 @@ public class LedGridActivity extends Activity{
 	
 	private WallObject myWall;
 	private MyApp appState;
+	LedGridAdapter ledgrid_adapter;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -57,19 +49,42 @@ public class LedGridActivity extends Activity{
 		GridView gridview = (GridView)findViewById(R.id.wallgrid);
 
 		gridview.setNumColumns(myWall.getNumCols());
-		gridview.setAdapter(new LedGridAdapter<LedColor>(this,R.layout.led_grid_item,myWall));
+		ledgrid_adapter=new LedGridAdapter<LedColor>(this,R.layout.led_grid_item,myWall);
+		gridview.setAdapter(ledgrid_adapter);
 		
      } // ()
 
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.wallgrid, menu);
+		return true;
+	}
 	
-/*	@Override
-	public void onBackPressed() {
-		// TODO Auto-generated method stub
-		super.onBackPressed();
-		Intent intent = new Intent(this,MainActivity.class);
-		startActivity(intent);
-	}*/
-	
+	public boolean clearAllLEDs(MenuItem item){
+		// launch activity to configure new wall
+		myWall.clearAll();
+		ledgrid_adapter.notifyDataSetChanged();
+		
+		BluetoothSocket socket = appState.getBtSocket();
+		if(socket == null)
+		{
+			//Toast.makeText(appState, "No bluetooth socket saved", Toast.LENGTH_SHORT).show();
+		}else{
+			OutputStream mmOutStream;
+			try {
+				mmOutStream = socket.getOutputStream();
+
+				BtMessageType mt = BtMessageType.CLEAR_ALL;
+				byte msglength = 0;
+				byte[] message =  new byte[] {msglength, (byte) mt.getValue()};        				
+				mmOutStream.write(message);
+			} catch (IOException e) {
+			}
+		}
+		return true;
+	}
 	
 	public void bluetoothSendMessage(byte[] messageToSend) {
 		mConnectedThread.write(messageToSend);

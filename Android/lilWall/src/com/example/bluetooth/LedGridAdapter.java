@@ -81,7 +81,7 @@ public class LedGridAdapter<LedColor> extends ArrayAdapter<LedColor> {
                 BluetoothSocket socket = appState.getBtSocket();
                 if(socket == null)
                 {
-                	Toast.makeText(appState, "No bluetooth socket saved", Toast.LENGTH_SHORT).show();
+                	//Toast.makeText(appState, "No bluetooth socket saved", Toast.LENGTH_SHORT).show();
                 }else{
                 	OutputStream mmOutStream;
                     try {

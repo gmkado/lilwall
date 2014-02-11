@@ -44,58 +44,72 @@ public class MainActivity extends Activity {
 		
         // load tasks from preference
         SharedPreferences prefs = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-
-        try {
+		
+		// the wall list is saved in shared preferences as a serialized string.  try deserializing
+        // return an empty arraylist if the pref doesnt exist
+		try {
             wallList = (ArrayList<WallObject>) deserialize(prefs.getString("WALL_LIST", serialize(new ArrayList<WallObject>())));
         } catch (IOException e) {
             e.printStackTrace();
         	wallList = new ArrayList<WallObject>();
         } 
+		
+		//set the appstate to store the wallList.  this is how well pass it between classes  
 		appState = (MyApp) getApplicationContext();
 		appState.setWallList(wallList);	
 		
-		// instantiate our ItemAdapter class
+		// instantiate our listview adapter which populates the view with our wall objects
 		m_adapter = new WallListViewAdapter(this, R.layout.wall_list_item, wallList);
         ListView m_listview = (ListView)findViewById(R.id.wallListView);
+		
+		//add a new listener for the listview
         m_listview.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            	Intent intent = new Intent(view.getContext(),LedGridActivity.class);	        	
+            	Intent intent = new Intent(view.getContext(),LedGridActivity.class);	  
+				
+				//set the appstate to store the selected wall and start the ledgrid activity
 	        	appState.setWall(position);
 	    		startActivity(intent);
           
             }
         });
-        //View header = (View)getLayoutInflater().inflate(R.layout.listview_header_row, null);
-        //addHeaderView(header);
         
+		// use our custom listview adapter with our listview
         m_listview.setAdapter(m_adapter);
         registerForContextMenu(m_listview);
 	}
-
-	
-	
+ 
+ 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		// TODO Auto-generated method stub
 		super.onActivityResult(requestCode, resultCode, data);
+		// returning from an activity...
+		
+		// check which activity
 		if (requestCode == CONFIGURE_NEW_WALL) {
             if (resultCode == RESULT_OK) {
-                // WALL WAS CREATED
+                // wall was successfully created
+				// get the wall object from the intent and add to our wall list
             	wallList.add((WallObject) data.getSerializableExtra("newWall"));
-            }
+				
+				// update stored wall list and listview
+				appState.setWallList(wallList);
+				m_adapter.notifyDataSetChanged();
+			}
         }
-		appState.setWallList(wallList);
-		m_adapter.notifyDataSetChanged();
+		
+		
+		
 	}
 
 
 	@Override
 	protected void onDestroy() {
-		// TODO Auto-generated method stub
 		super.onDestroy();
 		SharedPreferences prefs = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         Editor editor = prefs.edit();
         try {
+			//save wall list to prefs as a serialized string
             editor.putString("WALL_LIST", serialize((Serializable) wallList));
         } catch (IOException e) {
             e.printStackTrace();
@@ -113,14 +127,17 @@ public class MainActivity extends Activity {
 	
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
-	  if (v.getId()==R.id.wallListView) {
-	    AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
-	    menu.setHeaderTitle(((WallObject)wallList.get(info.position)).getWallName());
-	    String[] menuItems = getResources().getStringArray(R.array.menu);
-	    for (int i = 0; i<menuItems.length; i++) {
-	      menu.add(Menu.NONE, i, i, menuItems[i]);
-	    }
-	  }
+		if (v.getId()==R.id.wallListView) {
+			// user has long pressed on a wall item
+	    	AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
+	    	menu.setHeaderTitle(((WallObject)wallList.get(info.position)).getWallName());
+			
+			// populate the context menu
+	    	String[] menuItems = getResources().getStringArray(R.array.menu);
+	    	for (int i = 0; i<menuItems.length; i++) {
+	      		menu.add(Menu.NONE, i, i, menuItems[i]);
+	    	}
+	  	}
 	}
 	
 	@Override
@@ -129,10 +146,12 @@ public class MainActivity extends Activity {
 	  int menuItemIndex = item.getItemId();
 	  switch(menuItemIndex)
 	  {
-	  	case 0: 	// Edit
-	  		// Launch edit activity	  
+	  	case 0: 	
+			// Edit selected wall
+	  		// TODO: Launch edit activity	  
 	  		break;
 	  	case 1:
+			// delete selected wall
 	  		wallList.remove(info.position);	
 	  		appState.setWallList(wallList);
 			m_adapter.notifyDataSetChanged();
@@ -143,14 +162,16 @@ public class MainActivity extends Activity {
 	}
 	
 	public boolean configureNewWall(MenuItem item){
-		
+		// launch activity to configure new wall
 		Intent intent = new Intent(this,ConfigureNewWall.class);
 		startActivityForResult(intent,CONFIGURE_NEW_WALL);
 		return true;
 	}
 
 	
-    
+	
+    /************* code for serializing and deserializing our wall list **********/
+	
     public static String serialize(Serializable obj) throws IOException {
         if (obj == null) return "";
         try {

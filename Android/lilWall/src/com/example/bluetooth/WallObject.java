@@ -53,13 +53,7 @@ public class WallObject implements Serializable{
 		
 		// create an array of colors
 		ledArray = new LedColor[numRows][numCols];
-		// fill with all with black (LED off)
-		for (int i = 0; i<numRows; i++){
-			for(int j = 0; j<numCols; j++){
-				ledArray[i][j] = LedColor.BLACK;
-				
-			}
-		}
+		clearAll();
 	}
 
 	public int getID()
@@ -92,5 +86,15 @@ public class WallObject implements Serializable{
 	
 	public LedColor[][] getLedArray(){
 		return ledArray;
+	}
+	
+	public void clearAll(){
+		// fill with all with black (LED off)
+		for (int i = 0; i<numRows; i++){
+			for(int j = 0; j<numCols; j++){
+				ledArray[i][j] = LedColor.BLACK;
+
+			}
+		}
 	}
 }

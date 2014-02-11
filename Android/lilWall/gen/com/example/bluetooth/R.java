@@ -30,6 +30,7 @@ public final class R {
     public static final class id {
         public static final int action_settings=0x7f09000a;
         public static final int addWall=0x7f09000b;
+        public static final int clearAllLEDs=0x7f09000c;
         public static final int enterWallConfiguration=0x7f090003;
         public static final int led_grid_button=0x7f090007;
         public static final int menu_settings=0x7f090009;
