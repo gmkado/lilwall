@@ -1,12 +1,16 @@
-package com.example.bluetooth;
+package com.example.lilwall;
 
 import android.app.*;
 import android.bluetooth.*;
+import android.graphics.Color;
 import android.os.*;
 import android.util.*;
 import android.view.*;
 import android.widget.*;
-import com.example.bluetooth.WallObject.*;
+
+import com.example.lilwall.R;
+import com.example.lilwall.WallObject.*;
+
 import java.io.*;
 import java.util.*;
 
@@ -24,7 +28,7 @@ public class LedGridActivity extends Activity{
 	
 	private WallObject myWall;
 	private MyApp appState;
-	LedGridAdapter ledgrid_adapter;
+	LedGridAdapter<LedColor> ledgrid_adapter;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -35,25 +39,30 @@ public class LedGridActivity extends Activity{
 		
 		if (bluetooth == null) {
 			Toast.makeText(this, "No Bluetooth adapter detected on device.", Toast.LENGTH_LONG).show();
-			finish();
+			//finish();
 			return;
 		}
-		
-		BluetoothDevice device = bluetooth.getRemoteDevice("00:06:66:64:3C:37");
-		Log.v(TAG, "connecting to 00:06:66:64:3C:37");
-		mConnectThread = new ConnectThread(device);
-		mConnectThread.start();
+		else {
+			BluetoothDevice device = bluetooth.getRemoteDevice("00:06:66:64:3C:37");
+			Log.v(TAG, "connecting to 00:06:66:64:3C:37");
+			mConnectThread = new ConnectThread(device);
+			mConnectThread.start();
+		}
 		
 		appState = (MyApp) getApplicationContext();
 		myWall = appState.getWall();
 		GridView gridview = (GridView)findViewById(R.id.wallgrid);
-
+		// add borders to the gridview
+		gridview.setBackgroundColor(Color.WHITE);
+		gridview.setVerticalSpacing(1);
+		gridview.setHorizontalSpacing(1);
+		
+		// add adapter to gridview
 		gridview.setNumColumns(myWall.getNumCols());
 		ledgrid_adapter=new LedGridAdapter<LedColor>(this,R.layout.led_grid_item,myWall);
 		gridview.setAdapter(ledgrid_adapter);
 		
-     } // ()
-
+     } 
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

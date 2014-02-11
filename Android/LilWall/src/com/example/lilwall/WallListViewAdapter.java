@@ -1,6 +1,8 @@
-package com.example.bluetooth;
+package com.example.lilwall;
 
 import java.util.List;
+
+import com.example.lilwall.R;
 
 import android.app.Activity;
 import android.content.Context;

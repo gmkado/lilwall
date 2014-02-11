@@ -1,4 +1,4 @@
-package com.example.bluetooth;
+package com.example.lilwall;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -8,6 +8,8 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.example.lilwall.R;
 
 
 import android.app.Activity;

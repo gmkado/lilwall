@@ -7,8 +7,8 @@
         android:title="@string/menu_settings"/>
 	<item 
         android:id="@+id/clearAllLEDs" 
-        android:onClick="clearAll"
-        android:icon="@drawable/addwallicon"
-        android:title="@string/addWall"
+        android:onClick="clearAllLEDs"
+        android:icon="@drawable/clearallicon"
+        android:title="@string/clearAllLEDs"
         android:showAsAction="ifRoom" />
 </menu>

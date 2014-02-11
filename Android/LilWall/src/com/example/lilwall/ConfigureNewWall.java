@@ -1,4 +1,4 @@
-package com.example.bluetooth;
+package com.example.lilwall;
 
 
 import android.app.*;
@@ -7,6 +7,8 @@ import android.os.*;
 import android.view.*;
 import android.widget.*;
 import java.util.*;
+
+import com.example.lilwall.R;
 
 public class ConfigureNewWall extends Activity {
 

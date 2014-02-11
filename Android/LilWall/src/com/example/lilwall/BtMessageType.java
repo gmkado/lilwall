@@ -1,4 +1,4 @@
-package com.example.bluetooth;
+package com.example.lilwall;
 
 public enum BtMessageType {
 	CHANGE_COLOR(0),

@@ -1,12 +1,14 @@
 /**
  * 
  */
-package com.example.bluetooth;
+package com.example.lilwall;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+
+import com.example.lilwall.R;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothSocket;
@@ -47,9 +49,6 @@ public class LedGridAdapter<LedColor> extends ArrayAdapter<LedColor> {
     {
     	return myWall.getNumCols();
     }
-    
-
-    
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
@@ -66,6 +65,9 @@ public class LedGridAdapter<LedColor> extends ArrayAdapter<LedColor> {
         row = (position - col)/getColumnCount();
         
         b.setBackgroundColor(myWall.getColorVal(row,col));
+        
+        // what to do when led button is clicked
+        // CURRENTLY: cycle color value
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
