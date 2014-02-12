@@ -35,6 +35,7 @@ public class MainActivity extends Activity {
 	MyApp appState;
 	WallListViewAdapter m_adapter;
 	static final int CONFIGURE_NEW_WALL = 0;
+	static final boolean DEBUG = true;
 	
 	@SuppressWarnings("unchecked")
 	@Override
@@ -54,8 +55,13 @@ public class MainActivity extends Activity {
         } catch (IOException e) {
             e.printStackTrace();
         	wallList = new ArrayList<WallObject>();
+        	
         } 
-		
+		if(DEBUG && wallList.isEmpty()){
+			WallObject wall = new WallObject("hey", 5, 5);
+        	wallList.add(wall);
+        	
+		}
 		//set the appstate to store the wallList.  this is how well pass it between classes  
 		appState = (MyApp) getApplicationContext();
 		appState.setWallList(wallList);	
@@ -67,7 +73,7 @@ public class MainActivity extends Activity {
 		//add a new listener for the listview
         m_listview.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            	Intent intent = new Intent(view.getContext(),LedGridActivity.class);	  
+            	Intent intent = new Intent(view.getContext(),LEDGridActivity.class);	  
 				
 				//set the appstate to store the selected wall and start the ledgrid activity
 	        	appState.setWall(position);
@@ -123,19 +129,21 @@ public class MainActivity extends Activity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
+		getMenuInflater().inflate(R.menu.main_menu, menu);
 		return true;
 	}
 	
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+		super.onCreateContextMenu(menu, v, menuInfo);
+		
 		if (v.getId()==R.id.wallListView) {
 			// user has long pressed on a wall item
 	    	AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
 	    	menu.setHeaderTitle(((WallObject)wallList.get(info.position)).getWallName());
 			
 			// populate the context menu
-	    	String[] menuItems = getResources().getStringArray(R.array.menu);
+	    	String[] menuItems = getResources().getStringArray(R.array.wallList_context);
 	    	for (int i = 0; i<menuItems.length; i++) {
 	      		menu.add(Menu.NONE, i, i, menuItems[i]);
 	    	}

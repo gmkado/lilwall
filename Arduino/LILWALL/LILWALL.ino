@@ -43,16 +43,14 @@ void loop() {
       case CHANGE_COLOR:
       {
         Serial.println("message type = CHANGE_COLOR");
-        Serial.println("row index = " + String(message[1]));
-        Serial.println("col index = " + String(message[2]));
-        int ledPos = message[1] * NumCols + message[2];
-        Serial.println("ledPos = " + String(ledPos));
-        Serial.println("red value = " + String(message[3]));
-        LEDChannels[ledPos][RED] = message[3];
-        Serial.println("green value = " + String(message[4]));
-        LEDChannels[ledPos][GREEN] = message[4];
-        Serial.println("blue value = " + String(message[5]));
-        LEDChannels[ledPos][BLUE] = message[5];
+        Serial.println("position = " + String(message[1]));
+        int ledPos = message[1];
+        Serial.println("red value = " + String(message[2]));
+        LEDChannels[ledPos][RED] = message[2];
+        Serial.println("green value = " + String(message[3]));
+        LEDChannels[ledPos][GREEN] = message[3];
+        Serial.println("blue value = " + String(message[4]));
+        LEDChannels[ledPos][BLUE] = message[4];
         WriteLEDArray();
         break;
       }

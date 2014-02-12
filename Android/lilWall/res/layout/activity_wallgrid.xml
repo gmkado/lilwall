@@ -3,6 +3,7 @@
     android:id="@+id/wallgrid"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".WallGridActivity" >
-
+    tools:context=".WallGridActivity"
+    android:clickable ="true" 
+    >
 </GridView>

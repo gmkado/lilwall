@@ -9,45 +9,42 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import com.example.lilwall.R;
+import com.example.lilwall.ColorPickerFragment.ColorPickerDialogListener;
+import com.larswerkman.holocolorpicker.ColorPicker;
 
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 /**
  * @author Grant
  *
  */
-public class LedGridAdapter<LedColor> extends ArrayAdapter<LedColor> {
-	int row, colorVal;
-	int col;
+public class LEDGridAdapter<Integer> extends ArrayAdapter<Integer> {
+	int colorVal;
 	WallObject myWall;
 	private MyApp appState;
 
-    public LedGridAdapter(Context context, int textViewResourceId, WallObject wo) {
+	private static final String TAG ="LEDGridAdapter";
+	
+    public LEDGridAdapter(Context context, int textViewResourceId, WallObject wo) {
         super(context, textViewResourceId);
         myWall = wo;   
+        Log.v(TAG, "Got to constructor");
     }
     
     public int getCount()
     {
-    	return getRowCount()*getColumnCount();
-    }
-    
-    public int getRowCount()
-    {
-    	return myWall.getNumRows();
-    }
-    
-    public int getColumnCount()
-    {
-    	return myWall.getNumCols();
+      	return myWall.getNumCols()*myWall.getNumRows();
     }
 
     @Override
@@ -60,22 +57,20 @@ public class LedGridAdapter<LedColor> extends ArrayAdapter<LedColor> {
             cellView = inflater.inflate(R.layout.led_grid_item, parent, false);
         }
         
-        Button b = (Button) cellView.findViewById(R.id.led_grid_button);
-        col = position % getColumnCount();
-        row = (position - col)/getColumnCount();
-        
-        b.setBackgroundColor(myWall.getColorVal(row,col));
+        TextView tv = (TextView) cellView.findViewById(R.id.led_grid_item);
+        Log.v(TAG, "getView");
+        tv.setBackgroundColor(myWall.getColorVal(position));
         
         // what to do when led button is clicked
         // CURRENTLY: cycle color value
-        b.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            	col = position % getColumnCount();
-                row = (position - col)/getColumnCount();
-                
-                myWall.nextColor(row, col);
-                colorVal = myWall.getColorVal(row, col);
+        /*b.setOnClickListener(new View.OnClickListener() {
+            
+
+			@Override
+            public void onClick(View v) {            	         
+                myWall.nextColor(position);
+				colorVal = myWall.getColorVal(position);
+                Log.v(TAG, "colorval = "+colorVal);
                 v.setBackgroundColor(colorVal);
                 
                 // write to bluetooth
@@ -90,8 +85,8 @@ public class LedGridAdapter<LedColor> extends ArrayAdapter<LedColor> {
         				mmOutStream = socket.getOutputStream();
         				
         				BtMessageType mt = BtMessageType.CHANGE_COLOR;
-        				byte msglength = 6;
-        				byte[] message =  new byte[] {msglength, (byte) mt.getValue(), (byte) row , (byte) col,  
+        				byte msglength = 5;
+        				byte[] message =  new byte[] {msglength, (byte) mt.getValue(), (byte) position,  
         						(byte) Color.red(colorVal) ,(byte) Color.green(colorVal),(byte) Color.blue(colorVal)};        				
         				mmOutStream.write(message);
         			} catch (IOException e) {
@@ -99,8 +94,9 @@ public class LedGridAdapter<LedColor> extends ArrayAdapter<LedColor> {
                 }
                 
             }
-        });
-
+        });*/
+             
         return cellView;
     }
+
 }

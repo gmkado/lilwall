@@ -31,7 +31,7 @@
             android:noHistory="true" >
         </activity>
         <activity
-            android:name="com.example.lilwall.LedGridActivity"
+            android:name="com.example.lilwall.LEDGridActivity"
             android:label="@string/title_activity_wall_grid"
             android:parentActivityName="com.example.lilwall.MainActivity" >
             <meta-data

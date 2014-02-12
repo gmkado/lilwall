@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="menu">            
+    <string-array name="wallList_context">            
         <item>Edit</item>
         <item>Delete</item>    
-    </string-array>
-    
+    </string-array>    
+    <string-array name="ledgrid_context">            
+        <item>Choose Color</item>
+        <item>Reset</item>    
+    </string-array>   
 </resources>
