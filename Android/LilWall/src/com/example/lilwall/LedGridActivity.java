@@ -11,7 +11,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.*;
 import android.widget.AdapterView.OnItemLongClickListener;
 
-import com.example.lilwall.ColorPickerFragment.ColorPickerDialogListener;
 import com.example.lilwall.R;
 import com.example.lilwall.WallObject.*;
 import com.larswerkman.holocolorpicker.ColorPicker;
@@ -19,7 +18,7 @@ import com.larswerkman.holocolorpicker.ColorPicker;
 import java.io.*;
 import java.util.*;
 
-public class LEDGridActivity extends Activity implements ColorPickerDialogListener {
+public class LEDGridActivity extends Activity  {
 	private BluetoothAdapter bluetooth = null;
 	private ConnectThread mConnectThread;
 	private static ConnectedThread mConnectedThread;
@@ -39,7 +38,7 @@ public class LEDGridActivity extends Activity implements ColorPickerDialogListen
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_wallgrid);
+		setContentView(R.layout.activity_ledgrid);
 
 		bluetooth = BluetoothAdapter.getDefaultAdapter();
 		
@@ -57,7 +56,7 @@ public class LEDGridActivity extends Activity implements ColorPickerDialogListen
 		
 		appState = (MyApp) getApplicationContext();
 		myWall = appState.getWall();
-		GridView gridview = (GridView)findViewById(R.id.wallgrid);
+		GridView gridview = (GridView)findViewById(R.id.ledgrid);
 		
 		// add borders to the gridview
 		gridview.setBackgroundColor(Color.WHITE);
@@ -70,7 +69,7 @@ public class LEDGridActivity extends Activity implements ColorPickerDialogListen
 		
 		gridview.setAdapter(mAdapter);
 
-		registerForContextMenu(gridview);
+		//registerForContextMenu(gridview);
 		
      } 
 
@@ -81,51 +80,6 @@ public class LEDGridActivity extends Activity implements ColorPickerDialogListen
 		return true;
 	}
 	
-	@Override
-	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
-		super.onCreateContextMenu(menu, v, menuInfo);
-		
-		if (v.getId()==R.id.wallgrid) {
-			// user has long pressed on an led
-			DialogFragment newFragment = new ColorPickerFragment();
-		    newFragment.show(getFragmentManager(), "colorpicker");
-		    AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
-		    mLEDpos = info.position;
-			
-			/*// get which LED was pressed
-			AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
-			menu.setHeaderTitle("Change LED "+ info.position);
-			
-			// populate the context menu
-	    	String[] menuItems = getResources().getStringArray(R.array.ledgrid_context);
-	    	for (int i = 0; i<menuItems.length; i++) {
-	      		menu.add(Menu.NONE, i, i, menuItems[i]);
-	    	}	*/		
-	  	}
-	}
-	
-/*	@Override
-	public boolean onContextItemSelected(MenuItem item) {
-	  AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
-	  int menuItemIndex = item.getItemId();
-	  switch(menuItemIndex)
-	  {
-	  	case 0: 	
-			// Choose color
-	  		// show color picker fragment
-	    	DialogFragment newFragment = new ColorPickerFragment();
-		    newFragment.show(getFragmentManager(), "colorpicker");	  
-		    mLEDpos = info.position;
-	  		break;
-	  	case 1:
-			// reset color of hold
-	  		// TODO: set to black
-	  		break;
-	  		
-	  }
-	  return true;
-	}*/
-
 	public boolean clearAllLEDs(MenuItem item){
 		// launch activity to configure new wall
 		myWall.clearAll();
@@ -335,16 +289,4 @@ public class LEDGridActivity extends Activity implements ColorPickerDialogListen
 
 	}
 
-	@Override
-	public void onDialogPositiveClick(ColorPickerFragment dialog) {
-		// get color and set mywall hold
-		myWall.setColor(mLEDpos, dialog.getmColor());
-		mAdapter.notifyDataSetChanged();
-	}
-
-	@Override
-	public void onDialogNegativeClick(ColorPickerFragment dialog) {
-		// TODO Auto-generated method stub
-		
-	}
 }

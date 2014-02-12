@@ -9,7 +9,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import com.example.lilwall.R;
-import com.example.lilwall.ColorPickerFragment.ColorPickerDialogListener;
 import com.larswerkman.holocolorpicker.ColorPicker;
 
 import android.app.Activity;
@@ -57,21 +56,22 @@ public class LEDGridAdapter<Integer> extends ArrayAdapter<Integer> {
             cellView = inflater.inflate(R.layout.led_grid_item, parent, false);
         }
         
-        TextView tv = (TextView) cellView.findViewById(R.id.led_grid_item);
+        Button b = (Button) cellView.findViewById(R.id.led_grid_item);
         Log.v(TAG, "getView");
-        tv.setBackgroundColor(myWall.getColorVal(position));
+        b.setBackgroundColor(myWall.getColorVal(position));
         
         // what to do when led button is clicked
         // CURRENTLY: cycle color value
-        /*b.setOnClickListener(new View.OnClickListener() {
-            
-
-			@Override
+        b.setOnClickListener(new View.OnClickListener() {
+            @Override
             public void onClick(View v) {            	         
-                myWall.nextColor(position);
-				colorVal = myWall.getColorVal(position);
-                Log.v(TAG, "colorval = "+colorVal);
-                v.setBackgroundColor(colorVal);
+                ColorPicker picker = (ColorPicker) ((Activity) getContext()).findViewById(R.id.picker);
+        		int colorVal = picker.getColor();
+                myWall.setColor(position, colorVal);
+                picker.setOldCenterColor(picker.getColor());
+                
+                //myWall.nextColor(position);
+				v.setBackgroundColor(colorVal);
                 
                 // write to bluetooth
                 appState = (MyApp) getContext().getApplicationContext();
@@ -94,7 +94,7 @@ public class LEDGridAdapter<Integer> extends ArrayAdapter<Integer> {
                 }
                 
             }
-        });*/
+        });
              
         return cellView;
     }
