@@ -1,49 +1,46 @@
 package com.example.lilwall;
 
-import android.app.*;
-import android.bluetooth.*;
-import android.graphics.Color;
-import android.os.*;
-import android.util.*;
-import android.view.*;
-import android.view.ContextMenu.ContextMenuInfo;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.*;
-import android.widget.AdapterView.OnItemLongClickListener;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.UUID;
 
-import com.example.lilwall.R;
-import com.example.lilwall.WallObject.*;
-import com.larswerkman.holocolorpicker.ColorPicker;
 
-import java.io.*;
-import java.util.*;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
+import android.content.Context;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
+import android.widget.Toast;
 
-public class LEDGridActivity extends Activity  {
+public class BtConnection {
+	private static final String TAG = "BTConnect";
+	
 	private BluetoothAdapter bluetooth = null;
 	private ConnectThread mConnectThread;
-	private static ConnectedThread mConnectedThread;
+	private ConnectedThread mConnectedThread;
     public static final int MESSAGE_READ = 1;
     public static final int MESSAGE_DEVICE_NAME = 2;
     public static final int MESSAGE_TOAST = 3;
     public static final String TOAST = "toast";
 	private static UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
-	private static final String TAG = "LEDGridActivity";
 	private String connectedDeviceName = null;
+	private MyApp myapp;
+	private Context mycontext;
 	
-	private WallObject myWall;
-	private MyApp appState;
-	LEDGridAdapter<Integer> mAdapter;
-	int mLEDpos;
-	
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_ledgrid);
-
+	public BtConnection (Context context, MyApp app){
 		bluetooth = BluetoothAdapter.getDefaultAdapter();
+		myapp = app;
+		mycontext = context;
+	}
+	
+	public void connectBlueTooth(){
 		
 		if (bluetooth == null) {
-			Toast.makeText(this, "No Bluetooth adapter detected on device.", Toast.LENGTH_LONG).show();
+			Toast.makeText(mycontext, "No Bluetooth adapter detected on device.", Toast.LENGTH_LONG).show();
 			//finish();
 			return;
 		}
@@ -53,63 +50,18 @@ public class LEDGridActivity extends Activity  {
 			mConnectThread = new ConnectThread(device);
 			mConnectThread.start();
 		}
-		
-		appState = (MyApp) getApplicationContext();
-		myWall = appState.getWall();
-		GridView gridview = (GridView)findViewById(R.id.ledgrid);
-		
-		// add borders to the gridview
-		gridview.setBackgroundColor(Color.WHITE);
-		gridview.setVerticalSpacing(1);
-		gridview.setHorizontalSpacing(1);
-		
-		// add adapter to gridview
-		gridview.setNumColumns(myWall.getNumCols());
-		mAdapter=new LEDGridAdapter<Integer>(this,R.layout.led_grid_item,myWall);
-		
-		gridview.setAdapter(mAdapter);
-
-		//registerForContextMenu(gridview);
-		
-     } 
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.wallgrid_menu, menu);
-		return true;
 	}
 	
-	public boolean clearAllLEDs(MenuItem item){
-		// launch activity to configure new wall
-		myWall.clearAll();
-		mAdapter.notifyDataSetChanged();
-		
-		BluetoothSocket socket = appState.getBtSocket();
-		if(socket == null)
-		{
-			//Toast.makeText(appState, "No bluetooth socket saved", Toast.LENGTH_SHORT).show();
-		}else{
-			OutputStream mmOutStream;
-			try {
-				mmOutStream = socket.getOutputStream();
-
-				BtMessageType mt = BtMessageType.CLEAR_ALL;
-				byte msglength = 0;
-				byte[] message =  new byte[] {msglength, (byte) mt.getValue()};        				
-				mmOutStream.write(message);
-			} catch (IOException e) {
-			}
-		}
-		return true;
-	}
+	
+	
+	
 	
 	public void bluetoothSendMessage(byte[] messageToSend) {
 		mConnectedThread.write(messageToSend);
 	}
 	
 	private class ConnectThread extends Thread {
-	    private final BluetoothSocket mmSocket;
+		private final BluetoothSocket mmSocket;
 	    private final BluetoothDevice mmDevice;
 	 
 	    public ConnectThread(BluetoothDevice device) {
@@ -164,8 +116,7 @@ public class LEDGridActivity extends Activity  {
 	    }
 	}	
 	
-	public synchronized void connected(BluetoothSocket socket,
-			BluetoothDevice device) {
+	public synchronized void connected(BluetoothSocket socket,BluetoothDevice device) {
 
 		if (mConnectedThread != null) {
 			mConnectedThread.cancel();
@@ -175,7 +126,7 @@ public class LEDGridActivity extends Activity  {
 		Log.v(TAG, socket.toString());
 		
 		// save socket to global variable
-		appState.setBtSocket(socket);
+		myapp.setBtSocket(socket);
 		
 		mConnectedThread = new ConnectedThread(socket);
 		mConnectedThread.start();
@@ -258,22 +209,18 @@ public class LEDGridActivity extends Activity  {
             case MESSAGE_DEVICE_NAME:
                 // save the connected device's name
                 connectedDeviceName = msg.getData().getString("device_name");
-                Toast.makeText(getApplicationContext(), "Connected to "
+                Toast.makeText(mycontext, "Connected to "
                                + connectedDeviceName, Toast.LENGTH_LONG).show();
                 break;
             case MESSAGE_TOAST:
-                Toast.makeText(getApplicationContext(), msg.getData().getString(TOAST),
+                Toast.makeText(mycontext, msg.getData().getString(TOAST),
                                Toast.LENGTH_SHORT).show();
                 break;
             }
         }
     };	
     
-    @Override 
-	protected void onDestroy() {
-		super.onDestroy();
-		stop();
-	}
+
     
 	public synchronized void stop() {
 
@@ -289,4 +236,6 @@ public class LEDGridActivity extends Activity  {
 
 	}
 
+
 }
+

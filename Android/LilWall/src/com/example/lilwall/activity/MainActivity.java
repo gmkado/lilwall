@@ -1,4 +1,4 @@
-package com.example.lilwall;
+package com.example.lilwall.activity;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -9,7 +9,15 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.example.lilwall.MyApp;
 import com.example.lilwall.R;
+import com.example.lilwall.R.array;
+import com.example.lilwall.R.id;
+import com.example.lilwall.R.layout;
+import com.example.lilwall.R.menu;
+import com.example.lilwall.R.string;
+import com.example.lilwall.adapter.WallListAdapter;
+import com.example.lilwall.model.WallObject;
 
 
 import android.app.Activity;
@@ -33,7 +41,7 @@ public class MainActivity extends Activity {
 
 	private List<WallObject> wallList;
 	MyApp appState;
-	WallListViewAdapter m_adapter;
+	WallListAdapter m_adapter;
 	static final int CONFIGURE_NEW_WALL = 0;
 	static final boolean DEBUG = true;
 	
@@ -67,13 +75,13 @@ public class MainActivity extends Activity {
 		appState.setWallList(wallList);	
 		
 		// instantiate our listview adapter which populates the view with our wall objects
-		m_adapter = new WallListViewAdapter(this, R.layout.wall_list_item, wallList);
+		m_adapter = new WallListAdapter(this, R.layout.wall_list_item, wallList);
         ListView m_listview = (ListView)findViewById(R.id.wallListView);
 		
 		//add a new listener for the listview
         m_listview.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            	Intent intent = new Intent(view.getContext(),LEDGridActivity.class);	  
+            	Intent intent = new Intent(view.getContext(),WallActivity.class);	  
 				
 				//set the appstate to store the selected wall and start the ledgrid activity
 	        	appState.setWall(position);
@@ -173,7 +181,7 @@ public class MainActivity extends Activity {
 	
 	public boolean configureNewWall(MenuItem item){
 		// launch activity to configure new wall
-		Intent intent = new Intent(this,ConfigureNewWall.class);
+		Intent intent = new Intent(this,ConfigureWallActivity.class);
 		startActivityForResult(intent,CONFIGURE_NEW_WALL);
 		return true;
 	}

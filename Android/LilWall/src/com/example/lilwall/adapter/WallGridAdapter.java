@@ -1,14 +1,20 @@
 /**
  * 
  */
-package com.example.lilwall;
+package com.example.lilwall.adapter;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import com.example.lilwall.BtMessageType;
+import com.example.lilwall.MyApp;
 import com.example.lilwall.R;
+import com.example.lilwall.R.id;
+import com.example.lilwall.R.layout;
+import com.example.lilwall.activity.WallActivity;
+import com.example.lilwall.model.WallObject;
 import com.larswerkman.holocolorpicker.ColorPicker;
 
 import android.app.Activity;
@@ -28,17 +34,16 @@ import android.widget.Toast;
  * @author Grant
  *
  */
-public class LEDGridAdapter<Integer> extends ArrayAdapter<Integer> {
+public class WallGridAdapter<Integer> extends ArrayAdapter<Integer> {
 	int colorVal;
 	WallObject myWall;
 	private MyApp appState;
 
 	private static final String TAG ="LEDGridAdapter";
 	
-    public LEDGridAdapter(Context context, int textViewResourceId, WallObject wo) {
+    public WallGridAdapter(Context context, int textViewResourceId, WallObject wo) {
         super(context, textViewResourceId);
         myWall = wo;   
-        Log.v(TAG, "Got to constructor");
     }
     
     public int getCount()
@@ -56,7 +61,7 @@ public class LEDGridAdapter<Integer> extends ArrayAdapter<Integer> {
             cellView = inflater.inflate(R.layout.led_grid_item, parent, false);
         }
         
-        Button b = (Button) cellView.findViewById(R.id.led_grid_item);
+        Button b = (Button) cellView.findViewById(R.id.led_grid_button);
         Log.v(TAG, "getView");
         b.setBackgroundColor(myWall.getColorVal(position));
         
@@ -65,16 +70,16 @@ public class LEDGridAdapter<Integer> extends ArrayAdapter<Integer> {
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {            	         
-                ColorPicker picker = (ColorPicker) ((Activity) getContext()).findViewById(R.id.picker);
-        		int colorVal = picker.getColor();
-                myWall.setColor(position, colorVal);
-                picker.setOldCenterColor(picker.getColor());
+                WallActivity mActivity = (WallActivity) getContext();
+            	int colorVal = mActivity.getCurrentRouteColor();
+        		
+                myWall.setLED(colorVal, position);                
+                mActivity.addRoutePosition(colorVal, position);
                 
-                //myWall.nextColor(position);
-				v.setBackgroundColor(colorVal);
+                v.setBackgroundColor(colorVal);
                 
                 // write to bluetooth
-                appState = (MyApp) getContext().getApplicationContext();
+                appState = (MyApp) mActivity.getApplicationContext();
                 BluetoothSocket socket = appState.getBtSocket();
                 if(socket == null)
                 {

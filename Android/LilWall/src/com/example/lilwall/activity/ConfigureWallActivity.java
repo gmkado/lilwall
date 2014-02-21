@@ -1,4 +1,4 @@
-package com.example.lilwall;
+package com.example.lilwall.activity;
 
 
 import android.app.*;
@@ -8,9 +8,14 @@ import android.view.*;
 import android.widget.*;
 import java.util.*;
 
+import com.example.lilwall.MyApp;
 import com.example.lilwall.R;
+import com.example.lilwall.R.id;
+import com.example.lilwall.R.layout;
+import com.example.lilwall.R.menu;
+import com.example.lilwall.model.WallObject;
 
-public class ConfigureNewWall extends Activity {
+public class ConfigureWallActivity extends Activity {
 
 	ArrayList<WallObject> wallList;
 	MyApp appState;

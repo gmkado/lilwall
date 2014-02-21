@@ -1,8 +1,11 @@
-package com.example.lilwall;
+package com.example.lilwall.adapter;
 
 import java.util.List;
 
 import com.example.lilwall.R;
+import com.example.lilwall.R.id;
+import com.example.lilwall.R.layout;
+import com.example.lilwall.model.WallObject;
 
 import android.app.Activity;
 import android.content.Context;
@@ -14,11 +17,11 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
-public class WallListViewAdapter extends ArrayAdapter<WallObject>{
+public class WallListAdapter extends ArrayAdapter<WallObject>{
 	List<WallObject> wallList;
 	Context context;
 	
-	public WallListViewAdapter(Context context, int textViewResourceId,List<WallObject> wallList) {
+	public WallListAdapter(Context context, int textViewResourceId,List<WallObject> wallList) {
 		super(context, textViewResourceId, wallList);
 		// TODO Auto-generated constructor stub
 		this.context = context;

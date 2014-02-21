@@ -3,6 +3,8 @@ package com.example.lilwall;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.example.lilwall.model.WallObject;
+
 import android.app.Application;
 import android.bluetooth.BluetoothSocket;
 
